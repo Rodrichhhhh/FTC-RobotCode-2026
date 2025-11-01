@@ -88,6 +88,7 @@ public class controller extends LinearOpMode {
             double velocity = shooterMotor.getVelocity(); // ticks/second
             double shooterRPM = (velocity / PER_REV) * 60;
 
+
             telemetry.addData("Shooter Power", "%.2f", shooterMotor.getPower());
             telemetry.addData("Shooter RPM", "%.0f", shooterRPM);
             telemetry.update();
@@ -101,6 +102,18 @@ public class controller extends LinearOpMode {
             }
 
             //MOVING
+
+            //NON IMU MOVING
+            //double rotate = gamepad1.right_stick_x;
+            //double strafe = gamepad1.left_stick_x;
+            //double forward = -gamepad1.left_stick_y;
+            //TopLeftMotor.setPower(forward + rotate + strafe);
+            //BottomLeftMotor.setPower(forward + rotate - strafe);
+            //TopRightMotor.setPower(forward - rotate - strafe);
+            //BottomRightMotor.setPower(forward - rotate + strafe);
+
+            //IMU MOVING
+            //Set orientation of RevHub
             RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                     RevHubOrientationOnRobot.UsbFacingDirection.LEFT);
@@ -121,6 +134,7 @@ public class controller extends LinearOpMode {
                 double r = Math.hypot(strafe, forward);
                 theta -= heading;
 
+                //crazy math
                 double newForward = r * Math.sin(theta);
                 double newStrafe = r * Math.cos(theta);
 
