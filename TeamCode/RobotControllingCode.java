@@ -52,10 +52,10 @@ public class controller extends LinearOpMode {
         //double HALF_POWER = -0.5
         double MAX_POWER = -1;
         double NO_POWER = 0;
-        double SevenFive_Power = -1;
+        //double SevenFive_Power = -1;
 
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
 
             // COLLECTOR
             if (gamepad2.y) {
@@ -71,7 +71,6 @@ public class controller extends LinearOpMode {
                 shooterMotor.setPower(MAX_POWER);
 
 
-
             } else {
                 shooterMotor.setPower(NO_POWER); // stop shooter
 
@@ -79,14 +78,11 @@ public class controller extends LinearOpMode {
             }
 
             //if (gamepad2.left_bumper) {
-                //shooterMotor.setPower(HALF_POWER);
+            //shooterMotor.setPower(HALF_POWER);
             //} else {
-                //shooterMotor.setPower(NO_POWER); // stop shooter
+            //shooterMotor.setPower(NO_POWER); // stop shooter
 
-           // }
-
-
-
+            // }
 
 
             double velocity = shooterMotor.getVelocity(); // ticks/second
@@ -100,66 +96,42 @@ public class controller extends LinearOpMode {
 
             if (gamepad2.a) {
                 AssistantShooter.setPower(-1);
-            }  else {
+            } else {
                 AssistantShooter.setPower(0);
             }
 
             //MOVING
-            double rotate = gamepad1.right_stick_x;
-            double strafe = gamepad1.left_stick_x;
-            double forward = -gamepad1.left_stick_y;
-
-            TopLeftMotor.setPower(forward + rotate + strafe);
-            BottomLeftMotor.setPower(forward + rotate - strafe);
-            TopRightMotor.setPower(forward - rotate - strafe);
-            BottomRightMotor.setPower(forward - rotate + strafe);
-
-
-//            double TopLeftPower = forward + strafe + rotate;
-//            double BottomLeftPower = forward - strafe + rotate;
-//            double TopRightPower = forward - strafe - rotate;
-//            double BottomRightPower = forward + strafe - rotate;
-//
-//            double maxPower = 1.0;
-//            double maxSpeed = 1.0;
-//
-//            maxPower = Math.max(maxPower, Math.abs(TopLeftPower));
-//            maxPower = Math.max(maxPower, Math.abs(BottomLeftPower));
-//            maxPower = Math.max(maxPower, Math.abs(TopRightPower));
-//            maxPower = Math.max(maxPower, Math.abs(BottomRightPower));
-//
-//            TopLeftMotor.setPower(maxSpeed * (TopLeftPower / maxPower));
-//            BottomLeftMotor.setPower(maxSpeed * (BottomLeftPower / maxPower));
-//            TopRightMotor.setPower(maxSpeed * (TopRightPower / maxPower));
-//            BottomRightMotor.setPower(maxSpeed * (BottomRightPower / maxPower));
             RevHubOrientationOnRobot RevOrientation = new RevHubOrientationOnRobot(
                     RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
                     RevHubOrientationOnRobot.UsbFacingDirection.LEFT);
-            //🐥
+
             imu.initialize(new IMU.Parameters(RevOrientation));
 
+            waitForStart();
+
+            while (opModeIsActive()) {
+                double rotate = gamepad1.right_stick_x;
+                double strafe = gamepad1.left_stick_x;
+                double forward = -gamepad1.left_stick_y;
+
+                double heading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+                // Field-centric transformation
                 double theta = Math.atan2(forward, strafe);
                 double r = Math.hypot(strafe, forward);
-
-                theta = AngleUnit.normalizeRadians(theta -
-                        imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+                theta -= heading;
 
                 double newForward = r * Math.sin(theta);
                 double newStrafe = r * Math.cos(theta);
 
+                TopLeftMotor.setPower(newForward + rotate + newStrafe);
+                BottomLeftMotor.setPower(newForward + rotate - newStrafe);
+                TopRightMotor.setPower(newForward - rotate - newStrafe);
+                BottomRightMotor.setPower(newForward - rotate + newStrafe);
+            }
 
         }
-
-
-
-
-
-        }
-
-
 
     }
 
-
-
-
+}
