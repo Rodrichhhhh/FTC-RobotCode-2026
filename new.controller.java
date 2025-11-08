@@ -50,9 +50,9 @@ public class controller extends LinearOpMode {
 
         waitForStart();
 
-        double MAX_POWER = -0.90;
-        double NO_POWER = 0;
-        double PER_REV = 28;
+        double MAX_POWER = -1;           //power used by motors
+        double NO_POWER = 0;             //power of motors when inactive
+        double PER_REV = 28;             //REV rotations
         boolean intakeToggle = false;    //Shooter
         boolean intakeToggle2 = false;   //Assistant Shooter
         boolean intakeToggle3 = false;   //Collector
@@ -82,8 +82,8 @@ public class controller extends LinearOpMode {
                 Collector.setPower((0));
             }
             Collector.setPower(intakeToggle3 ? MAX_POWER : NO_POWER);
-            
-            
+
+
 
             // Drive control
             double rotate = gamepad1.right_stick_x;
